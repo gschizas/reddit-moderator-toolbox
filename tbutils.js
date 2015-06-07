@@ -29,7 +29,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
 
@@ -48,8 +48,10 @@ function initwrapper() {
             "I dunno what this 'Safari' thing is.",
             "eeeeew... why is there PHP code in this room?",
             "nah there is an actual difference between stuff",
-            "...have you paid money *out of your own pocket* to anyone to vet this product",
-            "first I want to make sure my thing actually does work sort of "],
+            "...have you paid money *out of your own pocket* to anyone to vet this product?",
+            "first I want to make sure my thing actually does work sort of",
+            "Don't let \"perfect\" get in the way of \"good.\"",
+            "damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",
@@ -59,7 +61,8 @@ function initwrapper() {
             "Initiating data transfer: NSA_backdoor_package. ",
             "Please post puppy pictures, they are so fluffy!",
             "RES is visiting for a sleepover,  no time right now",
-            "toolbox is on strike, we demand more karma!"];
+            "toolbox is on strike, we demand more karma!",
+            "brb... kicking Gustavobc from #toolbox"];
 
 
 
@@ -69,9 +72,9 @@ function initwrapper() {
     TBUtils.browsers = TBStorage.browsers;
 
     // Public variables
-    TBUtils.toolboxVersion = '3.1.2' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 312; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Valuing Vulture';
+    TBUtils.toolboxVersion = '3.2.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 320; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'TBD';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
     TBUtils.notesMinSchema = 2;
@@ -185,9 +188,29 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.1.1 version changes
+        // 3.2 version changes
+        $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, SHORTNAME);
 
-        // NO CHANGES
+
+        // remove bnw shim
+        localStorage.removeItem('Toolbox.Storage.resetKey');
+
+        // queue creatures conversion.
+        // We only need to worry if they disabled kitteh, since it's still the default in the new setting.
+        if (!TBStorage.getSetting('QueueTools', 'kitteh', true)) {
+            TBStorage.setSetting('QueueTools', 'queueCreature', 'i_have_no_soul');
+        }
+        localStorage.removeItem('Toolbox.QueueTools.kitteh');
+
+        // TOOLBOX IS NOT WRITTEN IN PYTHON!
+        var lastSeen = TBStorage.getSetting('Achievements', 'last_seen', 0);
+        if (lastSeen > 0) {
+            TBStorage.setSetting('Achievements', 'lastSeen', lastSeen);
+        } else {
+            TBStorage.setSetting('Achievements', 'lastSeen', now);
+        }
+        localStorage.removeItem('Toolbox.Achievements.last_seen');
+
 
         // End: version changes.
 
@@ -238,7 +261,10 @@ function initwrapper() {
     };
 
     TBUtils.events = {
-        TB_ABOUT_PAGE: "TB_ABOUT_PAGE"
+        TB_ABOUT_PAGE: "TB_ABOUT_PAGE",
+        TB_APPROVE_THING: "TB_APPROVE_THING",
+        TB_FLY_SNOO: 'TB_FLY_SNOO',
+        TB_KILL_SNOO: 'TB_KILL_SNOO'
     };
 
     // Methods and stuff
@@ -330,7 +356,7 @@ function initwrapper() {
 			return entityMap[s];
 		});
 	};
-    
+
     TBUtils.getTime = function() {
         return new Date().getTime();
     };
@@ -338,7 +364,7 @@ function initwrapper() {
     TBUtils.getRandomNumber = function(maxInt){
         return Math.floor((Math.random() * maxInt) + 1)
     };
-    
+
     //
     TBUtils.minutesToMilliseconds = function (mins) {
         var oneMin = 60000,
@@ -351,11 +377,15 @@ function initwrapper() {
 
         return milliseconds;
     };
-    
+
     TBUtils.daysToMilliseconds = function (days) {
         return days * 86400000;
     };
-    
+
+    TBUtils.millisecondsToDays = function (milliseconds) {
+        return milliseconds / 86400000;
+    };
+
     // convert unix epoch timestamps to ISO format
     TBUtils.timeConverterISO = function (UNIX_timestamp) {
         var a = new Date(UNIX_timestamp * 1000);
@@ -720,7 +750,7 @@ function initwrapper() {
         }
         return str.slice(0, -1);
     };
-    
+
     TBUtils.stringFormat = function(format) {
         var args = Array.prototype.slice.call(arguments, 1);
         return format.replace(/{(\d+)}/g, function(match, number) {
@@ -1206,14 +1236,14 @@ function initwrapper() {
                         $.log(err, false, SHORTNAME);
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
-                    
+
                     // Moved out of the try so random exceptions don't erase the entire wiki page
                     if (parsedWikiData) {
                         callback(parsedWikiData);
                     } else {
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
-                    
+
                     return;
                 }
 
@@ -1625,8 +1655,8 @@ function initwrapper() {
     TBUtils.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
     };
-    
-    
+
+
     TBUtils.zlibInflate = function (stringThing) {
         // Expand base64
         stringThing = atob(stringThing);
@@ -1635,7 +1665,7 @@ function initwrapper() {
         inflate.push(stringThing);
         return inflate.result;
     };
-    
+
     TBUtils.zlibDeflate = function (objThing) {
         // zlib time!
         var deflate = new pako.Deflate({to:'string'});
@@ -1644,8 +1674,8 @@ function initwrapper() {
         // Collapse to base64
         return btoa(objThing);
     };
-    
-    
+
+
     TBUtils.clearCache = function () {
         $.log('TBUtils.clearCache()', false, SHORTNAME);
 
@@ -1765,13 +1795,6 @@ function initwrapper() {
 
         // Just in case.
         TBStorage.unloading();
-
-
-        //localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
-
-        if (TBStorage.bnwShim) {
-            localStorage[TBStorage.BNW_SHIM_KEY] = true;
-        }
     };
 
 

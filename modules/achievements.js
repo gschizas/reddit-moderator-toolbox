@@ -10,7 +10,7 @@ self.register_setting('save', {
     'default': ''
 });
 
-self.register_setting('last_seen', {
+self.register_setting('lastSeen', {
     'type': 'number',
     'default': TBUtils.getTime(),
     'hidden': true
@@ -178,7 +178,7 @@ self.init = function () {
     self.manager.init();
 
     // Individual achievement stuff
-    var lastSeen = self.setting('last_seen');
+    var lastSeen = self.setting('lastSeen');
 
     // Achievement definitions
     self.log('Registering achievements');
@@ -201,14 +201,15 @@ self.init = function () {
         // I tried defaulting to now but it's still wonky.
         var now = TBUtils.getTime(),
             timeSince = now - lastSeen,
-            daysSince = TBUtils.daysToMilliseconds(timeSince);
+            daysSince = TBUtils.millisecondsToDays(timeSince);
+        self.log('daysSince: ' + daysSince);
 
         if (daysSince >= 7) {
-            self.log("you've got an award!");
-            //self.manager.unlock(saveIndex);
+            //self.log("you've got an award!");
+            self.manager.unlock(saveIndex);
         }
 
-        self.setting('last_seen', now);
+        self.setting('lastSeen', now);
     });
 
     //toolbox Loves You: Look at the about page
@@ -242,12 +243,19 @@ self.init = function () {
     });
 
     // approving stuff
-    self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master'], 'Approved {0} things', [50, 200, 1000, 10000], function (saveIndex) {
+    self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'], 'Approved {0} things', [50, 200, 1000, 10000, 20000], function (saveIndex) {
+
+        // If just the button is used.
         $body.on('click', '.pretty-button, .approve-button', function () {
             var $this = $(this);
             if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
                 self.manager.unlock(saveIndex, 1);
             }
+        });
+
+        // If the API is used
+        TB.utils.catchEvent(TB.utils.events.TB_APPROVE_THING, function () {
+            self.manager.unlock(saveIndex, 1);
         });
     });
 
@@ -259,10 +267,24 @@ self.init = function () {
     });
 
     // Empty queue
-    self.manager.registerSeries(['kitteh get!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 700, 1500], function (saveIndex) {
+    self.manager.registerSeries(['kitteh get!', 'puppy power!','<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], function (saveIndex) {
         if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
             self.manager.unlock(saveIndex, 1);
         }
+    });
+
+    // Found flying Snoo
+    self.manager.register('Cadbury Bunny', 'Found flying Snoo.', function (saveIndex) {
+        TB.utils.catchEvent(TB.utils.events.TB_FLY_SNOO, function () {
+            self.manager.unlock(saveIndex);
+        });
+    });
+
+    // Killed Snoo
+    self.manager.register('you bastard!', 'Killed Snoo.', function (saveIndex) {
+        TB.utils.catchEvent(TB.utils.events.TB_KILL_SNOO, function () {
+            self.manager.unlock(saveIndex);
+        });
     });
 };
 

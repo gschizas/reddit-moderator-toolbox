@@ -79,6 +79,7 @@
 }
 
 .mod-toolbox #tb-modmail {
+	top: 2px;
     display: inline-block;
     height: 16px;
     overflow: hidden;
@@ -128,7 +129,7 @@
     background-repeat: no-repeat;
     line-height: 8px;
     position: relative;
-    top: 2px;
+    top: 3px;
     display: inline-block;
     text-indent: -9999px;
     overflow: hidden;
@@ -973,8 +974,8 @@ body .thing.flaired {
 }
 
 .pretty-button.inoffensive {
-    background-position: 0 -240px;
-    background-image: url(//www.redditstatic.com/sprite-reddit.rQ7y8qN-wzQ.png);
+    background-position: 0px -105px;
+    background-image: url(http://a.thumbs.redditmedia.com/Ec85AWdAyumYZeFVgEaxwSr6Go8NZyCgGmtTVQsQqc8.png);
     background-repeat: repeat;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -982,7 +983,7 @@ body .thing.flaired {
 }
 
 .pretty-button.inoffensive.pressed {
-    background-position: 0 -200px!important;
+    background-position: 0 -82px!important;
 }
 
 .thing+input[type="checkbox"]:focus {
@@ -998,6 +999,10 @@ body .thing.flaired {
     width: 300px;
 }
 .history-button-popup div.table.comment-table {
+    display: inline-block;
+    width: 300px;
+}
+.history-button-popup div.table.account-table {
     display: inline-block;
     width: 300px;
 }
@@ -1053,7 +1058,7 @@ body .thing.flaired {
     text-align: center;
 }
 
-.rts-report,.rts-report-clicked, .markdown-report, .comment-report {
+.rts-report,.rts-report-clicked, .markdown-report, .comment-report, .account-report {
     font-weight: bold;
     font-size: x-small;
     padding: 0 5px 0 5px;
@@ -1308,7 +1313,7 @@ height: 300px;
     margin-left: 0;
     margin-right: 0;
     width: auto;
-    height: 10px;    
+    height: 10px;
     background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
 }
 
@@ -1806,9 +1811,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 /* This should probably be somewhere else */
 
 #moderation_tools .icon-menu .toolbox-edit {
-    margin-left: 6px;
+    margin-left: 5px;
 }
 
+#moderation_tools .icon-menu .tb-un-manager {
+    margin-left: 1px;
+}
 
 /* metrics tab/dropdown stuff */
 #tb-metrics-expand-list {

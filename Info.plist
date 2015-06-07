@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.1.2</string>
+	<string>3.2.0</string>
 	<key>CFBundleVersion</key>
-	<string>312</string>
+	<string>320</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
@@ -31,7 +31,7 @@
 				<string>libs/tbplugins.js</string>
 				<string>libs/snuownd.js</string>
 				<string>libs/ace.js</string>
-				<string>libs/pako.min.js</string>
+				<string>libs/pako.js</string>
 				<string>libs/worker-css.js</string>
 				<string>libs/mode-css.js</string>
 				<string>libs/mode-json.js</string>
